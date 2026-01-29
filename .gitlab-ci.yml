@@ -9,3 +9,10 @@ pytest:
   artifacts:
     reports:
       junit: junit.xml
+  
+deployment:
+  stage: deploy
+  script:
+    - curl <your deploy hook copied from render.com>
+  only:
+    - main
