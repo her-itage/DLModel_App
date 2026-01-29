@@ -1,7 +1,29 @@
-FROM tensorflow/serving:latest
+FROM python:3.11-slim
 
-COPY ./models /models
+# Create an app directory to contain our application
 
-EXPOSE 8501
+RUN mkdir /app
 
-CMD ["tensorflow_model_server", "--rest_api_port=8501", "--model_name=digit_classifier", "--model_base_path=/models/digit_classifier"]
+# Copy requirements.txt from project folder into the image
+
+COPY requirements.txt /app/requirements.txt
+
+# Change our working directory in the image to /app folder
+
+WORKDIR /app
+
+# Install all the packages needed to run our web app
+
+RUN pip install -r requirements.txt
+
+# Add all files and sub-folders into the /app folder
+
+COPY . /app
+
+# Expose port 5000 for http communication
+
+EXPOSE 5000
+
+# Run gunicorn web server and bind it to the port
+
+CMD gunicorn --bind 0.0.0.0:5000 app:app
